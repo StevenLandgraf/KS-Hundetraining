@@ -21,11 +21,11 @@ const PROFILE = {
   name: "Dr. Steven Landgraf",
   title: "AI Engineer & Researcher",
   institution: "Karlsruhe Institute of Technology (KIT)",
-  tagline: "Bridging Research and Real-World Impact in Machine Vision",
+  tagline: "Bridging Research and Real-World Impact in Machine Vision.",
   about: "I'm an AI engineer, researcher, and tech enthusiast living at the intersection of computer vision and metrology. My focus is on making AI systems more reliable, interpretable, and safer—across domains like remote sensing, robotics, and autonomous driving. Whether debugging a stubborn model or guiding a thesis, I love pushing the boundaries of what machines can do.",
   email: "steven.landgraf@kit.edu", // Placeholder based on institution
   links: {
-    linkedin: "https://www.linkedin.com/in/steven-landgraf-1a781321a/",
+    linkedin: "https://www.linkedin.com/in/steven-landgraf-1a781321a/?locale=en-US",
     scholar: "https://scholar.google.com/citations?user=7DOqcXkAAAAJ&hl=en",
   }
 };
@@ -341,7 +341,7 @@ const GlassCard = ({ children, className = "", hoverEffect = true }) => (
 
 export default function App() {
   const [typedText, setTypedText] = useState('');
-  const fullText = "Teaching neural networks to see the world.";
+  const fullText = PROFILE.tagline;
 
   useEffect(() => {
     let index = 0;
@@ -367,7 +367,8 @@ export default function App() {
             <span className="text-cyan-500">.</span>
           </h1>
           <h2 className="text-2xl md:text-4xl text-slate-400 mb-8 max-w-2xl animate-fade-in-up delay-200">
-            {PROFILE.title} <span className="text-slate-600">at</span> <span className="text-slate-300">{PROFILE.institution}</span>
+            {PROFILE.title} <span className="text-slate-600">at</span><br />
+            <span className="text-slate-300">{PROFILE.institution}</span>
           </h2>
           
           <div className="h-8 md:h-12 mb-12 flex items-center">
@@ -396,35 +397,33 @@ export default function App() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-lg text-slate-400 leading-relaxed">
             <p>
-              I'm a Research Scientist passionate about <strong className="text-cyan-300">Machine Learning</strong> and <strong className="text-purple-300">Computer Vision</strong>.
+              I'm an AI engineer, researcher, and tech enthusiast living at the intersection of <strong className="text-cyan-300">computer vision</strong> and <strong className="text-cyan-300">metrology</strong>. My focus is on making AI systems more <strong className="text-cyan-300">reliable</strong>, <strong className="text-cyan-300">interpretable</strong>, and <strong className="text-cyan-300">safer</strong>—across domains like <strong className="text-cyan-300">remote sensing</strong>, <strong className="text-cyan-300">robotics</strong>, and <strong className="text-cyan-300">autonomous driving</strong>. Whether debugging a stubborn model or guiding a thesis, I love pushing the boundaries of what machines can do.
             </p>
             <p>
-              {PROFILE.about}
+              My work aims to bridge the gap between cutting-edge research and real-world impact. From <strong className="text-cyan-300">autonomous driving</strong> to <strong className="text-cyan-300">medical imaging</strong>, I build systems that don't just predict, but <em>understand</em> what they don't know.
             </p>
-            <p>
-              My work aims to bridge the gap between cutting-edge research and real-world impact. From autonomous driving to medical imaging, I build systems that don't just predict, but <em>understand</em> what they don't know.
-            </p>
-            <div className="pt-4 flex flex-wrap gap-3">
+            {/* <div className="pt-4 flex flex-wrap gap-3">
               {["Machine Learning", "Sports", "Music", "Tech", "Coding"].map(interest => (
                 <span key={interest} className="px-3 py-1 bg-slate-800 rounded-md text-sm text-slate-300 border border-slate-700">
                   {interest}
                 </span>
               ))}
-            </div>
+            </div> */}
           </div>
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500 to-purple-600 rounded-2xl blur-2xl opacity-20 animate-pulse"></div>
             <GlassCard className="flex flex-col items-center text-center p-12">
-               <div className="w-32 h-32 rounded-full bg-slate-800 mb-6 flex items-center justify-center border-2 border-cyan-500/30 overflow-hidden relative">
-                 {/* Placeholder Avatar - replace src with real image */}
-                 <div className="absolute inset-0 bg-slate-700 animate-pulse"></div>
-                 <span className="relative z-10 text-4xl">👨‍💻</span>
-               </div>
+                <div className="w-32 h-32 rounded-full bg-slate-800 mb-6 flex items-center justify-center border-2 border-cyan-500/30 overflow-hidden relative">
+                  <img
+                    src="/me.jpg"
+                    alt="Dr. Steven Landgraf"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                <h3 className="text-2xl font-bold text-white mb-2">{PROFILE.name}</h3>
                <p className="text-cyan-400 mb-6">{PROFILE.title}</p>
                <div className="flex gap-4">
                  <a href={PROFILE.links.scholar} className="p-2 bg-slate-800 rounded-full hover:bg-cyan-500 hover:text-slate-900 transition-all"><BookOpen size={20}/></a>
-                 <a href={PROFILE.links.researchgate} className="p-2 bg-slate-800 rounded-full hover:bg-cyan-500 hover:text-slate-900 transition-all"><FileText size={20}/></a>
                  <a href={PROFILE.links.linkedin} className="p-2 bg-slate-800 rounded-full hover:bg-cyan-500 hover:text-slate-900 transition-all"><Linkedin size={20}/></a>
                </div>
             </GlassCard>
@@ -432,30 +431,32 @@ export default function App() {
         </div>
       </Section>
 
-      {/* SKILLS SECTION */}
-      <Section id="skills" title="Technical Arsenal">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SKILLS.map((skill) => (
-            <GlassCard key={skill.name} className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400">
-                <skill.icon size={24} />
-              </div>
-              <div className="w-full">
-                <div className="flex justify-between mb-2">
-                  <h4 className="font-semibold text-slate-200">{skill.name}</h4>
-                  <span className="text-xs text-cyan-400 font-mono">{skill.level}%</span>
+        {/* SKILLS SECTION - CONTEXTUAL VARIANT */}
+        <Section id="skills" title="Technical & Leadership Arsenal">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SKILLS.map((skill) => (
+              <GlassCard key={skill.name} className="flex flex-col gap-3 group hover:border-cyan-500/50 transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 transition-colors">
+                    <skill.icon size={24} />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-200">{skill.name}</h4>
+                    {/* Replace Percent with a text label */}
+                    <span className="text-xs text-slate-400 font-mono border border-slate-700 px-2 py-0.5 rounded-full">
+                      {skill.label} {/* e.g. "Daily Driver" or "Mentor Level" */}
+                    </span>
+                  </div>
                 </div>
-                <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
-                    style={{ width: `${skill.level}%` }}
-                  ></div>
-                </div>
-              </div>
-            </GlassCard>
-          ))}
-        </div>
-      </Section>
+                
+                {/* The Upgrade: Context over Progress Bars */}
+                <p className="text-sm text-slate-400 leading-relaxed">
+                  {skill.context}
+                </p>
+              </GlassCard>
+            ))}
+          </div>
+        </Section>
 
       {/* CV / TIMELINE SECTION */}
       <Section id="cv" title="Education & Journey">
