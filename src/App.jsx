@@ -19,16 +19,14 @@ import {
 
 const PROFILE = {
   name: "Dr. Steven Landgraf",
-  title: "Research Scientist (PostDoc)",
+  title: "AI Engineer & Researcher",
   institution: "Karlsruhe Institute of Technology (KIT)",
-  tagline: "Teaching neural networks to see the world.",
+  tagline: "Bridging Research and Real-World Impact in Machine Vision",
   about: "I'm an AI engineer, researcher, and tech enthusiast living at the intersection of computer vision and metrology. My focus is on making AI systems more reliable, interpretable, and safer—across domains like remote sensing, robotics, and autonomous driving. Whether debugging a stubborn model or guiding a thesis, I love pushing the boundaries of what machines can do.",
   email: "steven.landgraf@kit.edu", // Placeholder based on institution
   links: {
-    github: "https://github.com",
-    linkedin: "https://linkedin.com",
+    linkedin: "https://www.linkedin.com/in/steven-landgraf-1a781321a/",
     scholar: "https://scholar.google.com/citations?user=7DOqcXkAAAAJ&hl=en",
-    researchgate: "https://www.researchgate.net/profile/Steven-Landgraf-3"
   }
 };
 
@@ -37,19 +35,19 @@ const EDUCATION = [
     degree: "Dr.-Ing. Machine Vision Metrology",
     school: "Karlsruhe Institute of Technology (KIT)",
     year: "2025",
-    desc: "Dissertation on efficient estimation and exploitation of predictive uncertainties in deep learning-based machine vision."
+    desc: "Dissertation on Efficient Estimation and Exploitation of Predictive Uncertainties in Deep Learning-based Machine Vision."
   },
   {
     degree: "M.Sc. Geomatics",
     school: "Karlsruhe Institute of Technology (KIT)",
-    year: "2021",
-    desc: "Focus on photogrammetry, remote sensing, and computer vision."
+    year: "2020",
+    desc: "Specialized in Computer Vision and Geoinformatics."
   },
   {
     degree: "B.Sc. Geomatics",
     school: "Karlsruhe Institute of Technology (KIT)",
     year: "2018",
-    desc: "Foundational studies in geodesy and geoinformatics."
+    desc: "Foundational studies in geomatics."
   }
 ];
 
