@@ -1,119 +1,151 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Github, 
   Linkedin, 
-  Mail, 
-  FileText, 
   ChevronDown, 
   Brain, 
   Cpu, 
   Eye, 
-  Layers, 
   BookOpen, 
-  Award,
-  ExternalLink,
-  Code
+  Network,
+  Briefcase,
+  GraduationCap,
+  ShieldCheck,
+  Users,
+  Zap,
+  ArrowRight,
+  ScrollText
 } from 'lucide-react';
-
-// --- Assets & Data ---
 
 const PROFILE = {
   name: "Dr. Steven Landgraf",
-  title: "AI Engineer & Researcher",
-  institution: "Karlsruhe Institute of Technology (KIT)",
-  tagline: "Bridging Research and Real-World Impact in Machine Vision.",
+  title: "Senior AI Engineer & Researcher",
+  institution: "Karlsruhe Institute of Technology (KIT).",
+  tagline: "First-Principles Thinking to Transform Research into Solutions.",
   about: "I'm an AI engineer, researcher, and tech enthusiast living at the intersection of computer vision and metrology. My focus is on making AI systems more reliable, interpretable, and safer—across domains like remote sensing, robotics, and autonomous driving. Whether debugging a stubborn model or guiding a thesis, I love pushing the boundaries of what machines can do.",
-  email: "steven.landgraf@kit.edu", // Placeholder based on institution
+  email: "steven.landgraf@kit.edu",
   links: {
     linkedin: "https://www.linkedin.com/in/steven-landgraf-1a781321a/?locale=en-US",
     scholar: "https://scholar.google.com/citations?user=7DOqcXkAAAAJ&hl=en",
+    dissertation: "https://publikationen.bibliothek.kit.edu/1000183395",
   }
 };
 
-const EDUCATION = [
+const PHILOSOPHY = [
   {
-    degree: "Dr.-Ing. Machine Vision Metrology",
-    school: "Karlsruhe Institute of Technology (KIT)",
-    year: "2025",
-    desc: "Dissertation on Efficient Estimation and Exploitation of Predictive Uncertainties in Deep Learning-based Machine Vision."
+    title: "Reliability & Robustness",
+    icon: ShieldCheck,
+    color: "text-emerald-400",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/20",
+    description: "In a world of chasing state-of-the-art results on benchmarks, I focus on the messy reality. My work centers on reliability and robustness — building systems that know when they don't know. I believe AI should be safe, interpretable, and trustworthy before it is deployed."
   },
   {
-    degree: "M.Sc. Geomatics",
-    school: "Karlsruhe Institute of Technology (KIT)",
-    year: "2020",
-    desc: "Specialized in Computer Vision and Geoinformatics."
+    title: "Full-Stack Efficiency",
+    icon: Zap,
+    color: "text-amber-400",
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/20",
+    description: "Great research shouldn't stay a proof of concept. I bridge the gap between mathematical theory and production code. From optimizing model architectures to building reproducible Docker pipelines, I ensure that cutting-edge algorithms run efficiently in the real world."
   },
   {
-    degree: "B.Sc. Geomatics",
-    school: "Karlsruhe Institute of Technology (KIT)",
-    year: "2018",
-    desc: "Foundational studies in geomatics."
+    title: "Teamwork as a Multiplier",
+    icon: Users,
+    color: "text-blue-400",
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/20",
+    description: "Having successfully supervised over a dozen of theses and managed multiple industry projects, I have learned that collaboration is key. I empower students and peers to take ownership, turning individual potential into collective innovation."
   }
 ];
 
-const SKILLS = [
-  { name: "Computer Vision", icon: Eye, level: 95 },
-  { name: "Deep Learning", icon: Brain, level: 95 },
-  { name: "Uncertainty Quantification", icon: Layers, level: 90 },
-  { name: "Explainable AI", icon: Cpu, level: 85 },
-  { name: "Remote Sensing", icon: GlobeIcon, level: 80 },
-  { name: "Python / PyTorch", icon: Code, level: 95 },
+const EDUCATION = [
+  {
+    degree: "Dr.-Ing. in Machine VIsion",
+    school: "Karlsruhe Institute of Technology (KIT)",
+    year: "Defended: 07/2025",
+  },
+  {
+    degree: "M.Sc. in Geomatics",
+    school: "Karlsruhe Institute of Technology (KIT)",
+    year: "10/2018 - 08/2020",
+  },
+  {
+    degree: "B.Sc. in Geomatics",
+    school: "Karlsruhe Institute of Technology (KIT)",
+    year: "10/2015 - 08/2018",
+  }
+];
+
+const EXPERIENCE = [
+  {
+    role: "Senior Researcher",
+    company: "Machine Vision Metrology Group (KIT)",
+    year: "07/2025 - Present",
+  },
+  {
+    role: "Visiting Researcher",
+    company: "The Ohio State University (USA)",
+    year: "06/2024 - 09/2024",
+  },
+  {
+    role: "Researcher (PhD Student)",
+    company: "Machine Vision Metrology Group (KIT)",
+    year: "01/2022 - 06/2025",
+  },
+  {
+    role: "Lecturer & Software Engineer",
+    company: "Geoinformatics Group (KIT)",
+    year: "09/2020 - 10/2024",
+  },
+  {
+    role: "Personal Trainer",
+    company: "Boulderwelt GmbH",
+    year: "04/2023 - 01/2024",
+  },
+  {
+    role: "Student Assistant",
+    company: "Karlsruhe Institute of Technology (KIT)",
+    year: "04/2016 - 09/2020",
+  }
 ];
 
 const PUBLICATIONS = [
   {
-    title: "Rethinking Semi-supervised Segmentation Beyond Accuracy",
-    venue: "CVPR / ECCV (Preprint)",
-    date: "Jun 2025",
-    tags: ["Semi-supervised", "Robustness", "Reliability"],
-    link: "#"
+    title: "Rethinking Semi-supervised Segmentation Beyond Accuracy: Reliability and Robustness",
+    venue: "Conference",
+    date: "2025",
+    link: "https://stevenlandgraf.github.io/Rethinking_Semi-supervised_Segmentation_Website/"
   },
   {
-    title: "Efficient Multi-task Uncertainties for Joint Semantic Segmentation",
-    venue: "Pattern Recognition",
-    date: "Apr 2025",
-    tags: ["Multi-task Learning", "Depth Estimation"],
-    link: "#"
+    title: "Efficient Multi-task Uncertainties for Joint Semantic Segmentation and Monocular Depth Estimation",
+    venue: "Conference / Journal",
+    date: "2025",
+    link: "https://stevenlandgraf.github.io/EMUFormer_Website/"
   },
   {
-    title: "A Comparative Study on Multi-task Uncertainty Quantification",
-    venue: "Technisches Messen",
-    date: "Apr 2025",
-    tags: ["UQ", "Segmentation"],
-    link: "#"
+    title: "A Comparative Study on Multi-task Uncertainty Quantification in Semantic Segmentation and Monocular Depth Estimation",
+    venue: "Conference / Journal",
+    date: "2025",
+    link: "https://stevenlandgraf.github.io/Multi-task_Uncertainties_Website/"
   },
   {
-    title: "Critical Synthesis of Uncertainty Quantification and Foundation Models",
-    venue: "arXiv",
-    date: "Jan 2025",
-    tags: ["Foundation Models", "Monocular Depth"],
-    link: "#"
+    title: "A Critical Synthesis of Uncertainty Quantification and Foundation Models in Monocular Depth Estimation",
+    venue: "Journal",
+    date: "2025",
+    link: "https://stevenlandgraf.github.io/FoundationDepthUQ_Website/"
+  },
+  {
+    title: "U-CE: Uncertainty-aware Cross-Entropy for Semantic Segmentation",
+    venue: "Conference",
+    date: "2024",
+    link: "https://stevenlandgraf.github.io/U-CE_Website/"
+  },
+  {
+    title: "DUDES: Deep Uncertainty Distillation using Ensembles for Semantic Segmentation",
+    venue: "Journal",
+    date: "2024",
+    link: "https://stevenlandgraf.github.io/DUDES_Website/"
   }
 ];
-
-// Helper icon component
-function GlobeIcon(props) {
-  return (
-    <svg 
-      {...props} 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" 
-      height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="2" x2="22" y1="12" y2="12" />
-      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-  );
-}
-
-// --- Components ---
 
 const MeshBackground = () => {
   const canvasRef = useRef(null);
@@ -152,18 +184,16 @@ const MeshBackground = () => {
         this.vx = (Math.random() - 0.5) * 0.5;
         this.vy = (Math.random() - 0.5) * 0.5;
         this.size = Math.random() * 2 + 1;
-        this.color = `rgba(6, 182, 212, ${Math.random() * 0.5 + 0.1})`; // Cyan-ish
+        this.color = `rgba(6, 182, 212, ${Math.random() * 0.5 + 0.1})`; 
       }
 
       update() {
         this.x += this.vx;
         this.y += this.vy;
 
-        // Bounce off edges
         if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
         if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
 
-        // Mouse interaction
         if (mouse.x != null) {
           let dx = mouse.x - this.x;
           let dy = mouse.y - this.y;
@@ -198,13 +228,11 @@ const MeshBackground = () => {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Update and draw particles
       particles.forEach(particle => {
         particle.update();
         particle.draw();
       });
 
-      // Draw connections
       for (let i = 0; i < particles.length; i++) {
         for (let j = i; j < particles.length; j++) {
           let dx = particles[i].x - particles[j].x;
@@ -214,7 +242,7 @@ const MeshBackground = () => {
           if (distance < connectionDistance) {
             ctx.beginPath();
             let opacity = 1 - distance / connectionDistance;
-            ctx.strokeStyle = `rgba(6, 182, 212, ${opacity * 0.2})`; // Cyan lines
+            ctx.strokeStyle = `rgba(6, 182, 212, ${opacity * 0.2})`;
             ctx.lineWidth = 1;
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -223,7 +251,6 @@ const MeshBackground = () => {
         }
       }
 
-      // Draw connections to mouse
       if (mouse.x != null) {
          particles.forEach(particle => {
             let dx = mouse.x - particle.x;
@@ -232,7 +259,7 @@ const MeshBackground = () => {
             if (distance < mouseDistance) {
                 ctx.beginPath();
                 let opacity = 1 - distance / mouseDistance;
-                ctx.strokeStyle = `rgba(168, 85, 247, ${opacity * 0.4})`; // Purple mouse lines
+                ctx.strokeStyle = `rgba(168, 85, 247, ${opacity * 0.4})`;
                 ctx.lineWidth = 1.5;
                 ctx.moveTo(mouse.x, mouse.y);
                 ctx.lineTo(particle.x, particle.y);
@@ -266,6 +293,13 @@ const MeshBackground = () => {
   );
 };
 
+const navLinks = [
+  { name: 'About Me', href: '#about' },
+  { name: 'Experience & Education', href: '#cv' },
+  { name: 'Philosophy', href: '#philosophy' },
+  { name: 'Publications', href: '#publications' },
+];
+
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
 
@@ -275,18 +309,11 @@ const NavBar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Research', href: '#publications' },
-    { name: 'CV', href: '#cv' },
-  ];
-
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/80 backdrop-blur-md border-b border-cyan-500/10 py-4' : 'bg-transparent py-6'}`}>
       <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
         <a href="#" className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          SL.
+          SL
         </a>
         <div className="hidden md:flex gap-8">
           {navLinks.map(link => (
@@ -337,35 +364,84 @@ const GlassCard = ({ children, className = "", hoverEffect = true }) => (
   </div>
 );
 
-// --- Main App Component ---
+const FloatingElement = ({ icon: Icon, delay, x, y, size = 40, color = "text-cyan-500" }) => (
+  <div 
+    className={`absolute ${color} opacity-20 animate-float`}
+    style={{ 
+      top: y, 
+      left: x, 
+      animationDelay: `${delay}s`,
+      zIndex: 0 
+    }}
+  >
+    <Icon size={size} />
+  </div>
+);
+
+const TimelineItem = ({ title, place, year, children, last = false }) => (
+  <div className={`relative ${!last ? 'pb-12' : 'pb-0'}`}>
+    {!last && (
+      <div className="absolute top-2 left-[11px] md:left-[10px] w-0.5 h-full bg-slate-800/50 -z-10"></div>
+    )}
+    
+    <div className="flex gap-6 md:gap-10">
+      <div className="relative mt-2 flex-shrink-0">
+        <div className="h-6 w-6 rounded-full border-4 border-slate-950 bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)] z-10"></div>
+      </div>
+      
+      <div className="flex-grow">
+        <div className="flex justify-between items-baseline flex-wrap gap-x-4">
+          <h3 className="text-xl font-bold text-white order-1">{title}</h3>
+          <span className="text-cyan-400 font-mono text-sm whitespace-nowrap order-2">
+            {year}
+          </span>
+          <p className="text-purple-300 font-medium order-3 w-full mt-1 mb-2">{place}</p>
+        </div>
+        
+        <div className="text-slate-400 text-sm leading-relaxed space-y-2">
+          {children}
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default function App() {
-  const [typedText, setTypedText] = useState('');
-  const fullText = PROFILE.tagline;
+    const [typedText, setTypedText] = useState('');
+    const fullText = PROFILE.tagline; 
 
-  useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      setTypedText(fullText.substring(0, index));
-      index++;
-      if (index > fullText.length) clearInterval(interval);
-    }, 50);
-    return () => clearInterval(interval);
-  }, []);
+    useEffect(() => {
+      let index = 0;
+      const interval = setInterval(() => {
+        setTypedText(fullText.substring(0, index));
+        index++;
+        if (index > fullText.length) clearInterval(interval);
+      }, 50); 
+      return () => clearInterval(interval);
+    }, [fullText]); 
 
   return (
     <div className="min-h-screen text-slate-200 font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
-      <MeshBackground />
+      <MeshBackground /> 
       <NavBar />
 
-      {/* HERO SECTION */}
-      <section className="min-h-screen flex items-center justify-center pt-20 px-6 relative">
-        <div className="max-w-5xl w-full">
-          <p className="text-cyan-400 font-mono mb-4 animate-fade-in-up">Hi there, I'm</p>
+      <section className="min-h-screen flex items-center justify-center pt-20 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 w-full h-full pointer-events-none">
+          <FloatingElement icon={Brain} delay={0} x="15%" y="20%" size={64} color="text-purple-500" />
+          <FloatingElement icon={Cpu} delay={2} x="80%" y="30%" size={50} color="text-cyan-500" />
+          <FloatingElement icon={Eye} delay={4} x="70%" y="75%" size={56} color="text-emerald-500" />
+          <FloatingElement icon={Network} delay={1.5} x="10%" y="70%" size={48} color="text-blue-500" />
+        </div>
+
+        <div className="max-w-5xl w-full relative z-10">
+          <p className="text-slate-300 font-mono mb-4 animate-fade-in-up">Hi, I'm</p>
+
           <h1 className="text-6xl md:text-8xl font-bold tracking-tight mb-6 animate-fade-in-up delay-100">
-            {PROFILE.name}
-            <span className="text-cyan-500">.</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-500 to-cyan-400 bg-[length:200%_auto] animate-shimmer">
+              {PROFILE.name}.
+            </span>
           </h1>
+
           <h2 className="text-2xl md:text-4xl text-slate-400 mb-8 max-w-2xl animate-fade-in-up delay-200">
             {PROFILE.title} <span className="text-slate-600">at</span><br />
             <span className="text-slate-300">{PROFILE.institution}</span>
@@ -377,12 +453,30 @@ export default function App() {
              </span>
           </div>
 
-          <div className="flex gap-6 animate-fade-in-up delay-300">
-            <a href="#about" className="px-8 py-3 bg-cyan-600/10 border border-cyan-500/50 text-cyan-400 rounded-full font-medium hover:bg-cyan-500 hover:text-slate-900 transition-all duration-300">
-              Explore My Work
+          <div className="flex flex-wrap gap-4 animate-fade-in-up delay-300 max-w-3xl">
+            <a href="#about" className="group relative px-8 py-3 bg-cyan-600/10 border border-cyan-500/50 text-cyan-400 rounded-full font-medium overflow-hidden transition-all duration-300 hover:bg-cyan-500 hover:text-slate-900 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+              <span className="relative z-10">About Me</span>
+              <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
             </a>
-            <a href={`mailto:${PROFILE.email}`} className="px-8 py-3 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-full font-medium hover:bg-slate-700 transition-all duration-300">
-              Contact Me
+            
+            <a href="#cv" className="px-8 py-3 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-full font-medium hover:bg-slate-700 transition-all duration-300 hover:scale-105">
+              Experience & Education
+            </a>
+
+            <a href="#philosophy" className="px-8 py-3 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-full font-medium hover:bg-slate-700 transition-all duration-300 hover:scale-105">
+              Philosophy
+            </a>
+
+            <a href="#publications" className="px-8 py-3 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-full font-medium hover:bg-slate-700 transition-all duration-300 hover:scale-105">
+              Publications
+            </a>
+
+            <a href={PROFILE.links.scholar} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]">
+              <BookOpen size={18} /> Google Scholar
+            </a>
+
+            <a href={PROFILE.links.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]">
+              <Linkedin size={18} /> LinkedIn
             </a>
           </div>
         </div>
@@ -392,30 +486,23 @@ export default function App() {
         </a>
       </section>
 
-      {/* ABOUT SECTION */}
       <Section id="about" title="About Me">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6 text-lg text-slate-400 leading-relaxed">
+          <div className="space-y-6 text-lg text-slate-400 leading-relaxed text-justify">
             <p>
-              I'm an AI engineer, researcher, and tech enthusiast living at the intersection of <strong className="text-cyan-300">computer vision</strong> and <strong className="text-cyan-300">metrology</strong>. My focus is on making AI systems more <strong className="text-cyan-300">reliable</strong>, <strong className="text-cyan-300">interpretable</strong>, and <strong className="text-cyan-300">safer</strong>—across domains like <strong className="text-cyan-300">remote sensing</strong>, <strong className="text-cyan-300">robotics</strong>, and <strong className="text-cyan-300">autonomous driving</strong>. Whether debugging a stubborn model or guiding a thesis, I love pushing the boundaries of what machines can do.
+              I'm an AI engineer, researcher, and tech enthusiast living at the intersection of <strong className="text-cyan-300">computer vision</strong> and <strong className="text-cyan-300">metrology</strong>.
+              My focus is on making AI systems more reliable, efficient, interpretable, and safer — across domains like <strong className="text-cyan-300">remote sensing</strong>, <strong className="text-cyan-300">robotics</strong>, <strong className="text-cyan-300">medical imaging</strong>, <strong className="text-cyan-300">autonomous driving</strong>, and <strong className="text-cyan-300">industrial inspection</strong>.
             </p>
             <p>
-              My work aims to bridge the gap between cutting-edge research and real-world impact. From <strong className="text-cyan-300">autonomous driving</strong> to <strong className="text-cyan-300">medical imaging</strong>, I build systems that don't just predict, but <em>understand</em> what they don't know.
+              I'm passionate about bridging the gap between <strong className="text-purple-300">cutting-edge research</strong> and <strong className="text-purple-300">real-world impact</strong>. Whether debugging a stubborn model, optimizing deployment pipelines, or guiding a thesis to the finish line, I genuinely <strong className="text-purple-300">love to collaborate</strong> to push the boundaries of what machines can do for us.
             </p>
-            {/* <div className="pt-4 flex flex-wrap gap-3">
-              {["Machine Learning", "Sports", "Music", "Tech", "Coding"].map(interest => (
-                <span key={interest} className="px-3 py-1 bg-slate-800 rounded-md text-sm text-slate-300 border border-slate-700">
-                  {interest}
-                </span>
-              ))}
-            </div> */}
           </div>
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500 to-purple-600 rounded-2xl blur-2xl opacity-20 animate-pulse"></div>
             <GlassCard className="flex flex-col items-center text-center p-12">
                 <div className="w-32 h-32 rounded-full bg-slate-800 mb-6 flex items-center justify-center border-2 border-cyan-500/30 overflow-hidden relative">
                   <img
-                    src="/me.jpg"
+                    src="/Website/me.jpg"
                     alt="Dr. Steven Landgraf"
                     className="w-full h-full object-cover"
                   />
@@ -431,117 +518,165 @@ export default function App() {
         </div>
       </Section>
 
-        {/* SKILLS SECTION - CONTEXTUAL VARIANT */}
-        <Section id="skills" title="Technical & Leadership Arsenal">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SKILLS.map((skill) => (
-              <GlassCard key={skill.name} className="flex flex-col gap-3 group hover:border-cyan-500/50 transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 transition-colors">
-                    <skill.icon size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-200">{skill.name}</h4>
-                    {/* Replace Percent with a text label */}
-                    <span className="text-xs text-slate-400 font-mono border border-slate-700 px-2 py-0.5 rounded-full">
-                      {skill.label} {/* e.g. "Daily Driver" or "Mentor Level" */}
-                    </span>
-                  </div>
-                </div>
-                
-                {/* The Upgrade: Context over Progress Bars */}
-                <p className="text-sm text-slate-400 leading-relaxed">
-                  {skill.context}
-                </p>
-              </GlassCard>
-            ))}
-          </div>
-        </Section>
-
-      {/* CV / TIMELINE SECTION */}
-      <Section id="cv" title="Education & Journey">
-        <div className="relative border-l-2 border-slate-800 ml-3 md:ml-6 space-y-12 pl-8 md:pl-12">
-          {EDUCATION.map((edu, idx) => (
-            <div key={idx} className="relative">
-              <span className="absolute -left-[41px] md:-left-[57px] top-1 h-5 w-5 rounded-full border-4 border-slate-950 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.6)]"></span>
-              <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
-                <h3 className="text-xl font-bold text-white">{edu.degree}</h3>
-                <span className="hidden md:inline text-slate-600">•</span>
-                <span className="text-cyan-400 font-mono text-sm">{edu.year}</span>
-              </div>
-              <p className="text-purple-300 font-medium mb-2">{edu.school}</p>
-              <p className="text-slate-400 text-sm max-w-2xl">{edu.desc}</p>
+      <Section id="cv" title="Experience & Education">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+          <div className="order-2 md:order-1">
+            <h3 className="flex items-center gap-3 text-2xl font-bold text-white mb-8">
+              <Briefcase className="text-cyan-500" size={28} />
+              Professional Experience
+            </h3>
+            <div className="ml-3">
+              {EXPERIENCE.map((exp, idx) => (
+                <TimelineItem 
+                  key={idx} 
+                  title={exp.role} 
+                  place={exp.company} 
+                  year={exp.year}
+                  last={idx === EXPERIENCE.length - 1}
+                >
+                  {exp.focus && (
+                    <p className="mb-2 text-slate-300 font-medium text-justify">
+                      <span className="text-cyan-500/80 mr-2">Focus:</span>
+                      {exp.focus}
+                    </p>
+                  )}
+                  {exp.details && exp.details.length > 0 && (
+                     <ul className="list-disc list-outside ml-4 space-y-1 marker:text-cyan-500">
+                        {exp.details.map((detail, i) => <li key={i}>{detail}</li>)}
+                     </ul>
+                  )}
+                </TimelineItem>
+              ))}
             </div>
-          ))}
+          </div>
+
+          <div className="order-1 md:order-2 mb-16 md:mb-0"> 
+            <h3 className="flex items-center gap-3 text-2xl font-bold text-white mb-8">
+              <GraduationCap className="text-cyan-500" size={28} />
+              Education
+            </h3>
+            <div className="ml-3">
+              {EDUCATION.map((edu, idx) => (
+                <TimelineItem 
+                  key={idx} 
+                  title={edu.degree} 
+                  place={edu.school} 
+                  year={edu.year}
+                  last={idx === EDUCATION.length - 1} 
+                >
+                  {edu.details && edu.details.length > 0 && (
+                     <ul className="list-disc list-outside ml-4 space-y-1 marker:text-cyan-500 text-justify">
+                        {edu.details.map((detail, i) => <li key={i}>{detail}</li>)}
+                     </ul>
+                  )}
+                </TimelineItem>
+              ))}
+            </div>
+          </div>
         </div>
       </Section>
 
-      {/* PUBLICATIONS SECTION */}
-      <Section id="publications" title="Selected Publications">
-        <div className="grid md:grid-cols-2 gap-6">
-          {PUBLICATIONS.map((pub, idx) => (
-            <GlassCard key={idx} className="flex flex-col h-full group">
-              <div className="flex justify-between items-start mb-4">
-                <span className="px-3 py-1 text-xs font-bold text-purple-300 bg-purple-500/10 rounded-full border border-purple-500/20">
-                  {pub.venue}
-                </span>
-                <span className="text-slate-500 text-sm font-mono">{pub.date}</span>
+      <Section id="philosophy" title="My Core Philosophy">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {PHILOSOPHY.map((item, idx) => (
+            <GlassCard key={idx} className={`flex flex-col gap-4 group ${item.border} hover:bg-slate-800/60`}>
+              <div className={`p-3 w-fit rounded-lg ${item.bg} ${item.color}`}>
+                <item.icon size={28} />
               </div>
-              <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-cyan-400 transition-colors">
-                {pub.title}
+              <h3 className="text-xl font-bold text-slate-100 group-hover:text-white">
+                {item.title}
               </h3>
-              <div className="flex flex-wrap gap-2 mt-auto pt-6">
-                {pub.tags.map(tag => (
-                  <span key={tag} className="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-              <a href={pub.link} className="absolute top-6 right-6 text-slate-600 group-hover:text-white transition-colors">
-                <ExternalLink size={20} />
-              </a>
+              <p className="text-slate-400 leading-relaxed text-sm text-justify">
+                {item.description}
+              </p>
             </GlassCard>
           ))}
         </div>
-        <div className="mt-12 text-center">
-            <a href={PROFILE.links.scholar} className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 border-b border-cyan-400/30 hover:border-cyan-400 pb-1 transition-all">
-                View Full Publication List on Google Scholar <ExternalLink size={16}/>
+      </Section>
+
+      <Section id="publications" title="Selected Publications">
+        <div className="grid md:grid-cols-2 gap-6">
+          {PUBLICATIONS.map((pub, idx) => (
+            <GlassCard key={idx} className="flex flex-col h-full group relative hover:bg-slate-800/50 transition-colors">
+              <div className="flex justify-between items-center mb-4">
+                 <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-cyan-500"></span>
+                    <span className="text-cyan-400 text-sm font-mono">{pub.date}</span>
+                 </div>
+                 <span className="px-2 py-1 text-xs font-semibold text-purple-300 bg-purple-500/10 rounded border border-purple-500/20">
+                    {pub.venue}
+                 </span>
+              </div>
+
+              <h3 className="text-xl font-bold text-slate-100 mb-6 group-hover:text-white transition-colors leading-tight">
+                {pub.title}
+              </h3>
+
+              <div className="mt-auto flex items-center pt-4 border-t border-slate-700/50">
+                <a 
+                   href={pub.link} 
+                   target="_blank" 
+                   rel="noreferrer"
+                   className="flex items-center gap-2 text-sm font-medium text-slate-400 group-hover:text-cyan-400 transition-colors"
+                >
+                   View Project <ArrowRight size={16} />
+                </a>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+        <div className="mt-12 flex flex-wrap justify-center gap-4">
+            <a 
+              href={PROFILE.links.dissertation} 
+              target="_blank" 
+              rel="noreferrer" 
+              className="inline-flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]"
+            >
+              <ScrollText size={18} /> View Dissertation
+            </a>
+            
+            <a 
+              href={PROFILE.links.scholar} 
+              target="_blank" 
+              rel="noreferrer" 
+              className="inline-flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]"
+            >
+              <BookOpen size={18} /> All Publications
             </a>
         </div>
       </Section>
 
-      {/* CONTACT FOOTER */}
-      <footer className="bg-slate-900 border-t border-slate-800 py-16 mt-20 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50"></div>
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-6">Let's Connect</h2>
-          <p className="text-slate-400 mb-8 max-w-lg mx-auto">
-            Interested in collaboration, uncertainty quantification, or just want to chat about the latest in AI? Feel free to reach out.
-          </p>
-          <div className="flex justify-center gap-6 mb-12">
-            <a href={`mailto:${PROFILE.email}`} className="flex items-center gap-2 px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-all font-medium">
-              <Mail size={18} /> Email Me
-            </a>
-            <a href={PROFILE.links.linkedin} className="flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all font-medium">
-              <Linkedin size={18} /> LinkedIn
-            </a>
-          </div>
-          <div className="text-slate-600 text-sm">
-            <p>&copy; {new Date().getFullYear()} {PROFILE.name}. All rights reserved.</p>
-            <p className="mt-2 text-slate-700">Built with React, Tailwind, and neural particles.</p>
-          </div>
-        </div>
-      </footer>
+      <section className="py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <GlassCard className="relative overflow-hidden text-center p-12 border-cyan-500/30">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
+            
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">
+              Let's Connect
+            </h2>
+            <p className="text-slate-400 mb-8 max-w-lg mx-auto text-lg">
+              Interested in collaboration, AI discussions, or want to say hi?<br />
+              My inbox is always open!
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 mb-12">
+                <a href={PROFILE.links.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]">
+                  <Linkedin size={18} /> LinkedIn
+                </a>
+            </div>
 
-      {/* GLOBAL STYLES FOR ANIMATIONS */}
+            <div className="text-slate-600 text-sm border-t border-slate-800/50 pt-8">
+              <p>&copy; {new Date().getFullYear()} {PROFILE.name}. All rights reserved.</p>
+            </div>
+          </GlassCard>
+        </div>
+      </section>
+
       <style>{`
         @keyframes fade-in-up {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in-up {
-          animation: fade-in-up 0.8s ease-out forwards;
-        }
+        .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
         .delay-300 { animation-delay: 0.3s; }
@@ -550,8 +685,22 @@ export default function App() {
           0%, 100% { border-color: transparent; }
           50% { border-color: #a855f7; }
         }
-        .animate-pulse-cursor {
-          animation: blink 1s step-end infinite;
+        .animate-pulse-cursor { animation: blink 1s step-end infinite; }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+          0% { background-position: 200% center; }
+          100% { background-position: -200% center; }
+        }
+        .animate-shimmer {
+          animation: shimmer 8s linear infinite;
         }
       `}</style>
     </div>
