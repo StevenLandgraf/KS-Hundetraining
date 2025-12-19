@@ -2,7 +2,7 @@
   "name": "steven-landgraf",
   "version": "0.1.0",
   "private": true,
-  "homepage": "www.ks-hundetraining.de",
+  "homepage": "https://ks-hundetraining.de",
   "dependencies": {
     "gh-pages": "^6.1.1",
     "lucide-react": "^0.395.0",
