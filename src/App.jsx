@@ -1,708 +1,522 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Linkedin, 
-  ChevronDown, 
-  Brain, 
-  Cpu, 
-  Eye, 
-  BookOpen, 
-  Network,
-  Briefcase,
-  GraduationCap,
-  ShieldCheck,
-  Users,
-  Zap,
-  ArrowRight,
-  ScrollText
-} from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Camera, Star, Clock, Check, ChevronRight, Menu, X, Instagram, Mail, Phone, PawPrint } from 'lucide-react';
 
-const PROFILE = {
-  name: "Dr. Steven Landgraf",
-  title: "Senior AI Engineer & Researcher",
-  institution: "Karlsruhe Institute of Technology (KIT).",
-  tagline: "First-Principles Thinking to Transform Research into Solutions.",
-  about: "I'm an AI engineer, researcher, and tech enthusiast living at the intersection of computer vision and metrology. My focus is on making AI systems more reliable, interpretable, and safer—across domains like remote sensing, robotics, and autonomous driving. Whether debugging a stubborn model or guiding a thesis, I love pushing the boundaries of what machines can do.",
-  email: "steven.landgraf@kit.edu",
-  links: {
-    linkedin: "https://www.linkedin.com/in/steven-landgraf-1a781321a/?locale=en-US",
-    scholar: "https://scholar.google.com/citations?user=7DOqcXkAAAAJ&hl=en",
-    dissertation: "https://publikationen.bibliothek.kit.edu/1000183395",
-  }
-};
+// --- Assets ---
+// Using the uploaded image for the hero section
+const ENDING_IMAGE = "/steven_dogs.jpeg";
+const HERO_IMAGE = "/steven_karo.jpg";
 
-const PHILOSOPHY = [
-  {
-    title: "Reliability & Robustness",
-    icon: ShieldCheck,
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/20",
-    description: "In a world of chasing state-of-the-art results on benchmarks, I focus on the messy reality. My work centers on reliability and robustness — building systems that know when they don't know. I believe AI should be safe, interpretable, and trustworthy before it is deployed."
-  },
-  {
-    title: "Full-Stack Efficiency",
-    icon: Zap,
-    color: "text-amber-400",
-    bg: "bg-amber-500/10",
-    border: "border-amber-500/20",
-    description: "Great research shouldn't stay a proof of concept. I bridge the gap between mathematical theory and production code. From optimizing model architectures to building reproducible Docker pipelines, I ensure that cutting-edge algorithms run efficiently in the real world."
-  },
-  {
-    title: "Teamwork as a Multiplier",
-    icon: Users,
-    color: "text-blue-400",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
-    description: "Having successfully supervised over a dozen of theses and managed multiple industry projects, I have learned that collaboration is key. I empower students and peers to take ownership, turning individual potential into collective innovation."
-  }
-];
+// Online placeholder images for the preview
+const PHILOSOPHY_IMAGE = "/karo.png"; // Dog looking at hand/training
+const DOG_1_IMAGE = "/skittelz.png"; // Bulldog type for "Skittelz"
+const DOG_2_IMAGE = "/cappa.png"; // Mixed breed for "Cappa"
 
-const EDUCATION = [
-  {
-    degree: "Dr.-Ing. in Machine VIsion",
-    school: "Karlsruhe Institute of Technology (KIT)",
-    year: "Defended: 07/2025",
-  },
-  {
-    degree: "M.Sc. in Geomatics",
-    school: "Karlsruhe Institute of Technology (KIT)",
-    year: "10/2018 - 08/2020",
-  },
-  {
-    degree: "B.Sc. in Geomatics",
-    school: "Karlsruhe Institute of Technology (KIT)",
-    year: "10/2015 - 08/2018",
-  }
-];
+const WAVE_TEXTURE_IMAGE = "wave.png";
 
-const EXPERIENCE = [
-  {
-    role: "Senior Researcher",
-    company: "Machine Vision Metrology Group (KIT)",
-    year: "07/2025 - Present",
-  },
-  {
-    role: "Visiting Researcher",
-    company: "The Ohio State University (USA)",
-    year: "06/2024 - 09/2024",
-  },
-  {
-    role: "Researcher (PhD Student)",
-    company: "Machine Vision Metrology Group (KIT)",
-    year: "01/2022 - 06/2025",
-  },
-  {
-    role: "Lecturer & Software Engineer",
-    company: "Geoinformatics Group (KIT)",
-    year: "09/2020 - 10/2024",
-  },
-  {
-    role: "Personal Trainer",
-    company: "Boulderwelt GmbH",
-    year: "04/2023 - 01/2024",
-  },
-  {
-    role: "Student Assistant",
-    company: "Karlsruhe Institute of Technology (KIT)",
-    year: "04/2016 - 09/2020",
-  }
-];
+const WAVE_PATH_BOTTOM = "M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z";
+const WAVE_PATH_TOP = "M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z";
 
-const PUBLICATIONS = [
-  {
-    title: "Rethinking Semi-supervised Segmentation Beyond Accuracy: Reliability and Robustness",
-    venue: "Conference",
-    date: "2025",
-    link: "https://stevenlandgraf.github.io/Rethinking_Semi-supervised_Segmentation_Website/"
-  },
-  {
-    title: "Efficient Multi-task Uncertainties for Joint Semantic Segmentation and Monocular Depth Estimation",
-    venue: "Conference / Journal",
-    date: "2025",
-    link: "https://stevenlandgraf.github.io/EMUFormer_Website/"
-  },
-  {
-    title: "A Comparative Study on Multi-task Uncertainty Quantification in Semantic Segmentation and Monocular Depth Estimation",
-    venue: "Conference / Journal",
-    date: "2025",
-    link: "https://stevenlandgraf.github.io/Multi-task_Uncertainties_Website/"
-  },
-  {
-    title: "A Critical Synthesis of Uncertainty Quantification and Foundation Models in Monocular Depth Estimation",
-    venue: "Journal",
-    date: "2025",
-    link: "https://stevenlandgraf.github.io/FoundationDepthUQ_Website/"
-  },
-  {
-    title: "U-CE: Uncertainty-aware Cross-Entropy for Semantic Segmentation",
-    venue: "Conference",
-    date: "2024",
-    link: "https://stevenlandgraf.github.io/U-CE_Website/"
-  },
-  {
-    title: "DUDES: Deep Uncertainty Distillation using Ensembles for Semantic Segmentation",
-    venue: "Journal",
-    date: "2024",
-    link: "https://stevenlandgraf.github.io/DUDES_Website/"
-  }
-];
+// --- Components ---
 
-const MeshBackground = () => {
-  const canvasRef = useRef(null);
+const SectionHeading = ({ children, subtitle, light = false }) => (
+  <div className="text-center mb-12 md:mb-16">
+    {subtitle && (
+      <span className={`block text-sm font-bold uppercase tracking-[0.2em] mb-3 ${light ? 'text-stone-300' : 'text-stone-500'}`}>
+        {subtitle}
+      </span>
+    )}
+    <h2 className={`text-3xl md:text-5xl font-serif font-bold ${light ? 'text-white' : 'text-stone-800'}`}>
+      {children}
+    </h2>
+    <div className={`w-24 h-1 mx-auto mt-6 ${light ? 'bg-stone-400' : 'bg-[#8c7b6c]'}`}></div>
+  </div>
+);
+
+const NavItem = ({ label, page, onClick, active }) => (
+  <button
+    onClick={() => onClick(page)}
+    className={`px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 
+      ${active 
+        ? 'text-[#8c7b6c] border-b-2 border-[#8c7b6c]' 
+        : 'text-stone-600 hover:text-[#8c7b6c] hover:bg-stone-50 rounded-md'}`}
+  >
+    {label}
+  </button>
+);
+
+const Header = ({ setPage, activeSection }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    let animationFrameId;
-    let particles = [];
-    const particleCount = window.innerWidth < 768 ? 40 : 80;
-    const connectionDistance = 150;
-    const mouseDistance = 200;
-
-    let mouse = { x: null, y: null };
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initParticles();
-    };
-
-    const handleMouseMove = (e) => {
-      mouse.x = e.x;
-      mouse.y = e.y;
-    };
-
-    const handleMouseLeave = () => {
-      mouse.x = null;
-      mouse.y = null;
-    };
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.size = Math.random() * 2 + 1;
-        this.color = `rgba(6, 182, 212, ${Math.random() * 0.5 + 0.1})`; 
-      }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-
-        if (mouse.x != null) {
-          let dx = mouse.x - this.x;
-          let dy = mouse.y - this.y;
-          let distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < mouseDistance) {
-            const forceDirectionX = dx / distance;
-            const forceDirectionY = dy / distance;
-            const force = (mouseDistance - distance) / mouseDistance;
-            const directionX = forceDirectionX * force * 0.5;
-            const directionY = forceDirectionY * force * 0.5;
-            this.vx += directionX * 0.05;
-            this.vy += directionY * 0.05;
-          }
-        }
-      }
-
-      draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    const initParticles = () => {
-      particles = [];
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-      }
-    };
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach(particle => {
-        particle.update();
-        particle.draw();
-      });
-
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i; j < particles.length; j++) {
-          let dx = particles[i].x - particles[j].x;
-          let dy = particles[i].y - particles[j].y;
-          let distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < connectionDistance) {
-            ctx.beginPath();
-            let opacity = 1 - distance / connectionDistance;
-            ctx.strokeStyle = `rgba(6, 182, 212, ${opacity * 0.2})`;
-            ctx.lineWidth = 1;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      if (mouse.x != null) {
-         particles.forEach(particle => {
-            let dx = mouse.x - particle.x;
-            let dy = mouse.y - particle.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < mouseDistance) {
-                ctx.beginPath();
-                let opacity = 1 - distance / mouseDistance;
-                ctx.strokeStyle = `rgba(168, 85, 247, ${opacity * 0.4})`;
-                ctx.lineWidth = 1.5;
-                ctx.moveTo(mouse.x, mouse.y);
-                ctx.lineTo(particle.x, particle.y);
-                ctx.stroke();
-            }
-         });
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseleave', handleMouseLeave);
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseleave', handleMouseLeave);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
-
-  return (
-    <canvas 
-      ref={canvasRef} 
-      className="fixed top-0 left-0 w-full h-full -z-10 bg-slate-950"
-    />
-  );
-};
-
-const navLinks = [
-  { name: 'About Me', href: '#about' },
-  { name: 'Experience & Education', href: '#cv' },
-  { name: 'Philosophy', href: '#philosophy' },
-  { name: 'Publications', href: '#publications' },
-];
-
-const NavBar = () => {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/80 backdrop-blur-md border-b border-cyan-500/10 py-4' : 'bg-transparent py-6'}`}>
-      <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-        <a href="#" className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          SL
-        </a>
-        <div className="hidden md:flex gap-8">
-          {navLinks.map(link => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              className="text-slate-300 hover:text-cyan-400 font-medium transition-colors text-sm uppercase tracking-wider"
+    <header 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-4 md:py-6'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+        {/* Logo Area */}
+        <div 
+          className="flex items-center cursor-pointer group" 
+          onClick={() => setPage('hero')}
+        >
+          <div className={`font-serif font-bold text-xl md:text-2xl tracking-wider transition-colors ${isScrolled ? 'text-stone-800' : 'text-stone-800 md:text-white'}`}>
+            KARO & STEVEN
+            <span className={`block text-[10px] md:text-xs font-sans font-normal uppercase tracking-[0.3em] ${isScrolled ? 'text-[#8c7b6c]' : 'text-stone-600 md:text-stone-300'} group-hover:text-[#8c7b6c] transition-colors`}>
+              Hundetraining
+            </span>
+          </div>
+        </div>
+
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex space-x-1 bg-white/90 backdrop-blur-sm px-6 py-2 rounded-full shadow-sm border border-stone-100">
+          <NavItem label="Start" page="hero" onClick={setPage} active={activeSection === 'hero'} />
+          <NavItem label="Philosophie" page="philosophy" onClick={setPage} active={activeSection === 'philosophy'} />
+          <NavItem label="Leistungen" page="services" onClick={setPage} active={activeSection === 'services'} />
+          <NavItem label="Kontakt" page="contact" onClick={setPage} active={activeSection === 'contact'} />
+        </nav>
+
+        {/* Mobile Menu Button */}
+        <button 
+          className={`md:hidden p-2 rounded-md ${isScrolled ? 'text-stone-800' : 'text-stone-800 md:text-white'}`}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile Nav Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-stone-200 shadow-xl p-4 flex flex-col space-y-2 animate-fade-in-down">
+          {['hero', 'philosophy', 'services', 'contact'].map((section) => (
+            <button
+              key={section}
+              onClick={() => { setPage(section); setMobileMenuOpen(false); }}
+              className="text-left px-4 py-3 text-stone-600 font-medium hover:bg-stone-50 rounded-lg capitalize"
             >
-              {link.name}
-            </a>
+              {section === 'hero' ? 'Startseite' : section}
+            </button>
           ))}
         </div>
-        <div className="flex gap-4">
-            <a href={PROFILE.links.scholar} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition-colors"><BookOpen size={20}/></a>
-            <a href={PROFILE.links.linkedin} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition-colors"><Linkedin size={20}/></a>
-        </div>
-      </div>
-    </nav>
+      )}
+    </header>
   );
 };
 
-const Section = ({ id, title, children, className = "" }) => (
-  <section id={id} className={`py-20 md:py-32 px-6 ${className}`}>
-    <div className="max-w-6xl mx-auto">
-      {title && (
-        <h2 className="text-3xl md:text-5xl font-bold mb-16 flex items-center gap-4">
-          <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-            {title}
-          </span>
-          <div className="h-px bg-slate-800 flex-grow max-w-xs ml-4"></div>
-        </h2>
-      )}
-      {children}
+const HeroSection = ({ setPage }) => (
+  <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    {/* Background Image with Overlay */}
+    <div className="absolute inset-0 z-0">
+      <img 
+        src={HERO_IMAGE} 
+        alt="Karo und Steven mit Hunden" 
+        className="w-full h-full object-cover object-center"
+      />
+      {/* Gradient Overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-stone-900/40 via-stone-900/20 to-stone-900/60"></div>
+    </div>
+
+    {/* Content */}
+    <div className="relative z-10 max-w-4xl mx-auto px-4 text-center text-white mt-16">
+      <div className="inline-block mb-4 px-3 py-1 border border-white/30 rounded-full backdrop-blur-sm bg-white/10">
+        <p className="text-xs md:text-sm font-bold tracking-[0.2em] uppercase">Karo & Steven Hundetraining</p>
+      </div>
+      <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-tight mb-8 drop-shadow-lg">
+        Verständnis <br/><span className="italic font-light">schafft</span> Vertrauen.
+      </h1>
+      <p className="max-w-2xl mx-auto text-lg md:text-xl text-stone-100 mb-10 font-light leading-relaxed drop-shadow-md">
+        Jeder Hund verdient ein glückliches Leben - und wir geben jedem Hund eine Chance! Wer seinen Hund versteht, kann ihm Sicherheit geben. Wir helfen Ihnen dabei, eine vertrauensvolle Beziehung aufzubauen.
+        <br /> Fair, individuell und alltagstauglich.
+      </p>
+      
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <button 
+          onClick={() => setPage('services')}
+          className="px-8 py-4 bg-[#8c7b6c] text-white text-sm font-bold uppercase tracking-widest hover:bg-[#7a6b5e] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 rounded-sm"
+        >
+          Angebote ansehen
+        </button>
+        <button 
+          onClick={() => setPage('philosophy')}
+          className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/40 text-white text-sm font-bold uppercase tracking-widest hover:bg-white/20 transition-all duration-300 rounded-sm"
+        >
+          Unsere Philosophie
+        </button>
+      </div>
+    </div>
+    
+    {/* WAVE DIVIDER AT THE BOTTOM */}
+    <div className="absolute bottom-0 left-0 right-0 z-20 translate-y-[1px]">
+       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-16 md:h-32 fill-[#faf9f6]">
+          <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"></path>
+       </svg>
     </div>
   </section>
 );
 
-const GlassCard = ({ children, className = "", hoverEffect = true }) => (
-  <div className={`
-    relative overflow-hidden
-    bg-slate-900/40 backdrop-blur-md 
-    border border-slate-700/50 
-    rounded-2xl p-6 md:p-8 
-    ${hoverEffect ? 'hover:border-cyan-500/50 hover:shadow-[0_0_30px_-10px_rgba(6,182,212,0.3)] transition-all duration-300 group' : ''}
-    ${className}
-  `}>
-    {children}
-  </div>
-);
-
-const FloatingElement = ({ icon: Icon, delay, x, y, size = 40, color = "text-cyan-500" }) => (
-  <div 
-    className={`absolute ${color} opacity-20 animate-float`}
-    style={{ 
-      top: y, 
-      left: x, 
-      animationDelay: `${delay}s`,
-      zIndex: 0 
-    }}
-  >
-    <Icon size={size} />
-  </div>
-);
-
-const TimelineItem = ({ title, place, year, children, last = false }) => (
-  <div className={`relative ${!last ? 'pb-12' : 'pb-0'}`}>
-    {!last && (
-      <div className="absolute top-2 left-[11px] md:left-[10px] w-0.5 h-full bg-slate-800/50 -z-10"></div>
-    )}
-    
-    <div className="flex gap-6 md:gap-10">
-      <div className="relative mt-2 flex-shrink-0">
-        <div className="h-6 w-6 rounded-full border-4 border-slate-950 bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)] z-10"></div>
-      </div>
-      
-      <div className="flex-grow">
-        <div className="flex justify-between items-baseline flex-wrap gap-x-4">
-          <h3 className="text-xl font-bold text-white order-1">{title}</h3>
-          <span className="text-cyan-400 font-mono text-sm whitespace-nowrap order-2">
-            {year}
-          </span>
-          <p className="text-purple-300 font-medium order-3 w-full mt-1 mb-2">{place}</p>
-        </div>
-        
-        <div className="text-slate-400 text-sm leading-relaxed space-y-2">
-          {children}
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-export default function App() {
-    const [typedText, setTypedText] = useState('');
-    const fullText = PROFILE.tagline; 
-
-    useEffect(() => {
-      let index = 0;
-      const interval = setInterval(() => {
-        setTypedText(fullText.substring(0, index));
-        index++;
-        if (index > fullText.length) clearInterval(interval);
-      }, 50); 
-      return () => clearInterval(interval);
-    }, [fullText]); 
+const PhilosophySection = () => {
+  const principles = [
+    { title: "Verständnis", desc: "Wir analysieren Bedürfnisse und Motivationen.", icon: <PawPrint className="w-6 h-6" /> },
+    { title: "Klarheit", desc: "Wir kommunizieren eindeutig und sicher.", icon: <PawPrint className="w-6 h-6" /> },
+    { title: "Vertrauen", desc: "Wir schaffen Bindung durch Fairness.", icon: <PawPrint className="w-6 h-6" /> },
+    { title: "Souveränität", desc: "Wir führen gelassen und entspannt.", icon: <PawPrint className="w-6 h-6" /> },
+  ];
 
   return (
-    <div className="min-h-screen text-slate-200 font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
-      <MeshBackground /> 
-      <NavBar />
+    <section id="philosophy" className="py-24 bg-[#faf9f6] relative overflow-hidden">
+      {/* BACKGROUND TEXTURE IMAGE (The dummy image) */}
+      <div className="absolute inset-0 z-0 opacity-0 pointer-events-none">
+        <img src={WAVE_TEXTURE_IMAGE} alt="" className="w-full h-full object-cover grayscale" />
+      </div>
 
-      <section className="min-h-screen flex items-center justify-center pt-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 w-full h-full pointer-events-none">
-          <FloatingElement icon={Brain} delay={0} x="15%" y="20%" size={64} color="text-purple-500" />
-          <FloatingElement icon={Cpu} delay={2} x="80%" y="30%" size={50} color="text-cyan-500" />
-          <FloatingElement icon={Eye} delay={4} x="70%" y="75%" size={56} color="text-emerald-500" />
-          <FloatingElement icon={Network} delay={1.5} x="10%" y="70%" size={48} color="text-blue-500" />
-        </div>
-
-        <div className="max-w-5xl w-full relative z-10">
-          <p className="text-slate-300 font-mono mb-4 animate-fade-in-up">Hi, I'm</p>
-
-          <h1 className="text-6xl md:text-8xl font-bold tracking-tight mb-6 animate-fade-in-up delay-100">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-500 to-cyan-400 bg-[length:200%_auto] animate-shimmer">
-              {PROFILE.name}.
-            </span>
-          </h1>
-
-          <h2 className="text-2xl md:text-4xl text-slate-400 mb-8 max-w-2xl animate-fade-in-up delay-200">
-            {PROFILE.title} <span className="text-slate-600">at</span><br />
-            <span className="text-slate-300">{PROFILE.institution}</span>
-          </h2>
-          
-          <div className="h-8 md:h-12 mb-12 flex items-center">
-             <span className="text-xl md:text-2xl font-mono text-purple-400 border-r-2 border-purple-400 pr-2 animate-pulse-cursor">
-               {typedText}
-             </span>
-          </div>
-
-          <div className="flex flex-wrap gap-4 animate-fade-in-up delay-300 max-w-3xl">
-            <a href="#about" className="group relative px-8 py-3 bg-cyan-600/10 border border-cyan-500/50 text-cyan-400 rounded-full font-medium overflow-hidden transition-all duration-300 hover:bg-cyan-500 hover:text-slate-900 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)]">
-              <span className="relative z-10">About Me</span>
-              <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
-            </a>
-            
-            <a href="#cv" className="px-8 py-3 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-full font-medium hover:bg-slate-700 transition-all duration-300 hover:scale-105">
-              Experience & Education
-            </a>
-
-            <a href="#philosophy" className="px-8 py-3 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-full font-medium hover:bg-slate-700 transition-all duration-300 hover:scale-105">
-              Philosophy
-            </a>
-
-            <a href="#publications" className="px-8 py-3 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-full font-medium hover:bg-slate-700 transition-all duration-300 hover:scale-105">
-              Publications
-            </a>
-
-            <a href={PROFILE.links.scholar} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]">
-              <BookOpen size={18} /> Google Scholar
-            </a>
-
-            <a href={PROFILE.links.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]">
-              <Linkedin size={18} /> LinkedIn
-            </a>
-          </div>
-        </div>
-
-        <a href="#about" className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-slate-500 hover:text-cyan-400 transition-colors">
-          <ChevronDown size={32} />
-        </a>
-      </section>
-
-      <Section id="about" title="About Me">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6 text-lg text-slate-400 leading-relaxed text-justify">
-            <p>
-              I'm an AI engineer, researcher, and tech enthusiast living at the intersection of <strong className="text-cyan-300">computer vision</strong> and <strong className="text-cyan-300">metrology</strong>.
-              My focus is on making AI systems more reliable, efficient, interpretable, and safer — across domains like <strong className="text-cyan-300">remote sensing</strong>, <strong className="text-cyan-300">robotics</strong>, <strong className="text-cyan-300">medical imaging</strong>, <strong className="text-cyan-300">autonomous driving</strong>, and <strong className="text-cyan-300">industrial inspection</strong>.
-            </p>
-            <p>
-              I'm passionate about bridging the gap between <strong className="text-purple-300">cutting-edge research</strong> and <strong className="text-purple-300">real-world impact</strong>. Whether debugging a stubborn model, optimizing deployment pipelines, or guiding a thesis to the finish line, I genuinely <strong className="text-purple-300">love to collaborate</strong> to push the boundaries of what machines can do for us.
-            </p>
-          </div>
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500 to-purple-600 rounded-2xl blur-2xl opacity-20 animate-pulse"></div>
-            <GlassCard className="flex flex-col items-center text-center p-12">
-                <div className="w-32 h-32 rounded-full bg-slate-800 mb-6 flex items-center justify-center border-2 border-cyan-500/30 overflow-hidden relative">
-                  <img
-                    src="/Website/me.jpg"
-                    alt="Dr. Steven Landgraf"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-               <h3 className="text-2xl font-bold text-white mb-2">{PROFILE.name}</h3>
-               <p className="text-cyan-400 mb-6">{PROFILE.title}</p>
-               <div className="flex gap-4">
-                 <a href={PROFILE.links.scholar} className="p-2 bg-slate-800 rounded-full hover:bg-cyan-500 hover:text-slate-900 transition-all"><BookOpen size={20}/></a>
-                 <a href={PROFILE.links.linkedin} className="p-2 bg-slate-800 rounded-full hover:bg-cyan-500 hover:text-slate-900 transition-all"><Linkedin size={20}/></a>
-               </div>
-            </GlassCard>
-          </div>
-        </div>
-      </Section>
-
-      <Section id="cv" title="Experience & Education">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-          <div className="order-2 md:order-1">
-            <h3 className="flex items-center gap-3 text-2xl font-bold text-white mb-8">
-              <Briefcase className="text-cyan-500" size={28} />
-              Professional Experience
-            </h3>
-            <div className="ml-3">
-              {EXPERIENCE.map((exp, idx) => (
-                <TimelineItem 
-                  key={idx} 
-                  title={exp.role} 
-                  place={exp.company} 
-                  year={exp.year}
-                  last={idx === EXPERIENCE.length - 1}
-                >
-                  {exp.focus && (
-                    <p className="mb-2 text-slate-300 font-medium text-justify">
-                      <span className="text-cyan-500/80 mr-2">Focus:</span>
-                      {exp.focus}
-                    </p>
-                  )}
-                  {exp.details && exp.details.length > 0 && (
-                     <ul className="list-disc list-outside ml-4 space-y-1 marker:text-cyan-500">
-                        {exp.details.map((detail, i) => <li key={i}>{detail}</li>)}
-                     </ul>
-                  )}
-                </TimelineItem>
-              ))}
-            </div>
-          </div>
-
-          <div className="order-1 md:order-2 mb-16 md:mb-0"> 
-            <h3 className="flex items-center gap-3 text-2xl font-bold text-white mb-8">
-              <GraduationCap className="text-cyan-500" size={28} />
-              Education
-            </h3>
-            <div className="ml-3">
-              {EDUCATION.map((edu, idx) => (
-                <TimelineItem 
-                  key={idx} 
-                  title={edu.degree} 
-                  place={edu.school} 
-                  year={edu.year}
-                  last={idx === EDUCATION.length - 1} 
-                >
-                  {edu.details && edu.details.length > 0 && (
-                     <ul className="list-disc list-outside ml-4 space-y-1 marker:text-cyan-500 text-justify">
-                        {edu.details.map((detail, i) => <li key={i}>{detail}</li>)}
-                     </ul>
-                  )}
-                </TimelineItem>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <Section id="philosophy" title="My Core Philosophy">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {PHILOSOPHY.map((item, idx) => (
-            <GlassCard key={idx} className={`flex flex-col gap-4 group ${item.border} hover:bg-slate-800/60`}>
-              <div className={`p-3 w-fit rounded-lg ${item.bg} ${item.color}`}>
-                <item.icon size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-slate-100 group-hover:text-white">
-                {item.title}
-              </h3>
-              <p className="text-slate-400 leading-relaxed text-sm text-justify">
-                {item.description}
-              </p>
-            </GlassCard>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="publications" title="Selected Publications">
-        <div className="grid md:grid-cols-2 gap-6">
-          {PUBLICATIONS.map((pub, idx) => (
-            <GlassCard key={idx} className="flex flex-col h-full group relative hover:bg-slate-800/50 transition-colors">
-              <div className="flex justify-between items-center mb-4">
-                 <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-cyan-500"></span>
-                    <span className="text-cyan-400 text-sm font-mono">{pub.date}</span>
-                 </div>
-                 <span className="px-2 py-1 text-xs font-semibold text-purple-300 bg-purple-500/10 rounded border border-purple-500/20">
-                    {pub.venue}
-                 </span>
-              </div>
-
-              <h3 className="text-xl font-bold text-slate-100 mb-6 group-hover:text-white transition-colors leading-tight">
-                {pub.title}
-              </h3>
-
-              <div className="mt-auto flex items-center pt-4 border-t border-slate-700/50">
-                <a 
-                   href={pub.link} 
-                   target="_blank" 
-                   rel="noreferrer"
-                   className="flex items-center gap-2 text-sm font-medium text-slate-400 group-hover:text-cyan-400 transition-colors"
-                >
-                   View Project <ArrowRight size={16} />
-                </a>
-              </div>
-            </GlassCard>
-          ))}
-        </div>
-        <div className="mt-12 flex flex-wrap justify-center gap-4">
-            <a 
-              href={PROFILE.links.dissertation} 
-              target="_blank" 
-              rel="noreferrer" 
-              className="inline-flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]"
-            >
-              <ScrollText size={18} /> View Dissertation
-            </a>
-            
-            <a 
-              href={PROFILE.links.scholar} 
-              target="_blank" 
-              rel="noreferrer" 
-              className="inline-flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]"
-            >
-              <BookOpen size={18} /> All Publications
-            </a>
-        </div>
-      </Section>
-
-      <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <GlassCard className="relative overflow-hidden text-center p-12 border-cyan-500/30">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
-            
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">
-              Let's Connect
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <span className="text-[#8c7b6c] font-bold tracking-widest uppercase text-sm mb-2 block">Unsere Philosophie</span>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-stone-800 mb-6 leading-tight">
+              Nicht nur Training.<br/>
+              <span className="text-[#8c7b6c] italic">Eine Lebenseinstellung.</span>
             </h2>
-            <p className="text-slate-400 mb-8 max-w-lg mx-auto text-lg">
-              Interested in collaboration, AI discussions, or want to say hi?<br />
-              My inbox is always open!
+            <p className="text-stone-600 text-lg leading-relaxed mb-8">
+              Hundetraining ist mehr als nur "Sitz" und "Platz". <br />
+              Wir wollen keine Roboter, sondern fördern ruhige, selbstbewusste Hunde, die sich gerne an ihren Menschen orientieren.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
-                <a href={PROFILE.links.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-8 py-3 bg-purple-600/10 border border-purple-500/50 text-purple-400 rounded-full font-medium hover:bg-purple-700/20 transition-all duration-300 hover:scale-[1.02]">
-                  <Linkedin size={18} /> LinkedIn
-                </a>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {principles.map((p, idx) => (
+                <div key={idx} className="flex items-start space-x-4 p-4 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 backdrop-blur-sm">
+                  <div className="p-2 bg-[#e8e4dc] text-[#5c4d43] rounded-lg">
+                    {p.icon}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-stone-800 font-serif">{p.title}</h4>
+                    <p className="text-sm text-stone-500 mt-1">{p.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-
-            <div className="text-slate-600 text-sm border-t border-slate-800/50 pt-8">
-              <p>&copy; {new Date().getFullYear()} {PROFILE.name}. All rights reserved.</p>
-            </div>
-          </GlassCard>
+          </div>
+          
+          <div className="relative">
+             <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative z-10">
+                 <img src={PHILOSOPHY_IMAGE} alt="Training Philosophy" className="w-full h-full object-cover object-center" />
+             </div>
+             {/* Decorative Element */}
+             <div className="absolute -bottom-10 -right-10 w-full h-full border-2 border-[#8c7b6c] rounded-2xl z-0 hidden lg:block"></div>
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+};
 
+const TestimonialsSection = () => (
+  <section className="py-24 bg-[#2d241e] text-[#f7f5f0] relative overflow-hidden">
+    {/* Top Wave (Inverse) for smooth transition */}
+    <div className="absolute top-0 left-0 right-0 z-20 translate-y-[-1px]">
+       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-12 md:h-16 fill-[#faf9f6]">
+          <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
+       </svg>
+    </div>
+
+    <div className="absolute top-0 right-0 p-32 bg-[#422e26] rounded-full filter blur-3xl opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
+    
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-16">
+      <SectionHeading subtitle="Erfolgsgeschichten" light>Das sagen unsere Kunden</SectionHeading>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        {[
+          {
+            text: "Bisher haben uns alle Hundeschulen und Hundetrainer abgelehnt. Karo und Steven waren die ersten Trainer, die sich überhaupt an Skittelz herangetraut haben. Und das mit großem Erfolg! Bereits nach dem ersten Treffen konnten wir Fortschritte sehen.",
+            author: "Skittelz",
+            detail: "XL Bully (55kg) - Aggressionsprobleme",
+            image: DOG_1_IMAGE
+          },
+          {
+            text: "Wir konnten mit Cappa teilweise nicht mal mehr Gassigehen. Nach nur wenigen Minuten mit Karo und Steven war sie wie ausgetauscht. Wir sind so dankbar und freuen uns, dass wir Cappa ein besseres Leben ermöglichen können.",
+            author: "Cappa",
+            detail: "Mischling aus Rumänien - Angstverhalten",
+            image: DOG_2_IMAGE
+          }
+        ].map((t, i) => (
+          <div key={i} className="bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 hover:bg-white/10 transition duration-300 flex flex-col sm:flex-row overflow-hidden group">
+            
+            {/* Image Section - Large & 9:16 Aspect Ratio */}
+            <div className="sm:w-2/5 md:w-1/3 relative shrink-0">
+               {/* On Mobile: aspect-[9/16] forces a tall portrait crop. 
+                 On Desktop: h-full makes it fill the card height.
+               */}
+               <div className="aspect-[9/16] sm:aspect-auto sm:h-full w-full relative">
+                  <img 
+                    src={t.image} 
+                    alt={t.author} 
+                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" 
+                  />
+                  {/* Subtle gradient on mobile so text overlay isn't needed but edge looks nice */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#2d241e]/50 to-transparent sm:hidden"></div>
+               </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="p-8 sm:p-6 md:p-8 flex flex-col justify-center flex-1">
+              <div className="text-[#8c7b6c] mb-4 text-sm">
+                {[1,2,3,4,5].map(star => <span key={star} className="inline-block mr-1">★</span>)}
+              </div>
+              <p className="text-lg font-serif leading-relaxed mb-6 text-stone-200 italic">
+                "{t.text}"
+              </p>
+              <div className="mt-auto">
+                <p className="font-bold text-white tracking-wide text-lg">{t.author}</p>
+                <p className="text-stone-400 text-xs uppercase tracking-wider mt-1">{t.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    {/* Bottom Wave */}
+    <div className="absolute bottom-0 left-0 right-0 z-20 translate-y-[1px]">
+       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-12 md:h-16 fill-white">
+          <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"></path>
+       </svg>
+    </div>
+  </section>
+);
+
+const ServicesSection = ({ setPage }) => {
+  const services = [
+    {
+      title: "Erstgespräch",
+      price: "89,99€",
+      oldPrice: "134,99€", // Added old price
+      time: "90 Min",
+      desc: "Der Grundstein für Ihre gemeinsame Zukunft.",
+      features: ["Verhaltensanamnese", "Zieldefinition", "Individueller Plan", "Erste Schritte"],
+      highlight: true,
+      zeegUrl: "https://zeeg.me/landgrafsteven/erstgespraech"
+    },
+    {
+      title: "Einzeltermin",
+      price: "59,99€",
+      oldPrice: "89,99€", // Added old price
+      time: "60 Min",
+      desc: "Intensives 1:1 Training an Ihren Themen.",
+      features: ["Korrektur von Feinheiten", "Hausaufgaben-Check", "Praxisnahe Umgebung", "Direktes Feedback"],
+      highlight: false,
+      link: "#"
+    },
+    {
+      title: "Online Termin",
+      price: "19,99€",
+      oldPrice: "29,99€",
+      time: "30 Min",
+      desc: "Perfekt für schnelle Rückfragen & Theorie.",
+      features: ["Video-Beratung", "Analyse von Videos", "Ortsunabhängig", "Flexible Zeiten"],
+      highlight: false,
+      link: "#"
+    }
+  ];
+
+  return (
+    <section id="services" className="py-24 bg-white relative overflow-hidden">
+      {/* BACKGROUND TEXTURE IMAGE */}
+      <div className="absolute inset-0 z-0 opacity-0 pointer-events-none">
+        <img src={WAVE_TEXTURE_IMAGE} alt="" className="w-full h-full object-cover grayscale" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <SectionHeading subtitle="Unser Angebot">Investieren Sie in Ihre Beziehung</SectionHeading>
+        
+        <div className="text-center mb-12 -mt-8">
+           <span className="inline-block bg-[#8c7b6c]/10 text-[#8c7b6c] px-4 py-2 rounded-full text-sm font-bold tracking-wide">
+             Nur noch für kurze Zeit zu reduzierten Preisen!
+           </span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {services.map((s, i) => (
+            <div 
+              key={i} 
+              className={`relative rounded-2xl p-8 transition-all duration-300 group
+                ${s.highlight 
+                  ? 'bg-[#2d241e] text-[#f7f5f0] shadow-2xl scale-105 z-10' 
+                  : 'bg-[#faf9f6] text-stone-800 hover:shadow-xl border border-stone-100'}`}
+            >
+              {s.highlight && (
+                <div className="absolute top-0 right-0 bg-[#8c7b6c] text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl rounded-tr-xl uppercase tracking-widest">
+                  Empfohlen
+                </div>
+              )}
+              
+              <h3 className="text-2xl font-serif font-bold mb-2">{s.title}</h3>
+              
+              {/* Price Block Modified */}
+              <div className="mb-6">
+                {s.oldPrice && (
+                  <span className={`text-lg font-medium line-through decoration-2 opacity-60 block mb-1 ${s.highlight ? 'decoration-white/30 text-stone-300' : 'decoration-[#8c7b6c]/50 text-stone-400'}`}>
+                    {s.oldPrice}
+                  </span>
+                )}
+                <div className="flex items-baseline">
+                   {/* Add a specific color to the new price if it's a sale? */}
+                  <span className={`text-4xl font-bold ${!s.highlight && s.oldPrice ? 'text-[#8c7b6c]' : ''}`}>{s.price}</span>
+                  <span className={`ml-2 text-sm ${s.highlight ? 'text-stone-400' : 'text-stone-500'}`}>/ {s.time}</span>
+                </div>
+              </div>
+              
+              <p className={`mb-8 leading-relaxed ${s.highlight ? 'text-stone-300' : 'text-stone-600'}`}>{s.desc}</p>
+              
+              <ul className="space-y-4 mb-8">
+                {s.features.map((f, idx) => (
+                  <li key={idx} className="flex items-center text-sm">
+                    <Check size={16} className={`mr-3 ${s.highlight ? 'text-[#8c7b6c]' : 'text-[#8c7b6c]'}`} />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              <a 
+                href={s.link || "#"}
+                onClick={(e) => {
+                  if (s.zeegUrl && window.Zeeg) {
+                    e.preventDefault();
+                    window.Zeeg.initPopupWidget({ 
+                      url: s.zeegUrl, 
+                      textColor: '#2d241e', 
+                      primaryColor: '#8c7b6c', 
+                      utm: { 'source': null, 'medium': null, 'campaign': null, 'content': null, 'term': null } 
+                    });
+                  }
+                }}
+                target={s.zeegUrl ? undefined : "_blank"}
+                rel={s.zeegUrl ? undefined : "noopener noreferrer"}
+                className={`w-full py-4 rounded-lg font-bold uppercase tracking-widest text-xs transition-colors flex items-center justify-center group-hover:gap-2
+                  ${s.highlight 
+                    ? 'bg-[#8c7b6c] hover:bg-[#7a6b5e] text-white' 
+                    : 'bg-white border-2 border-[#2d241e] text-[#2d241e] hover:bg-[#2d241e] hover:text-white'}`}
+              >
+                Termin Buchen <ChevronRight size={14} className="hidden group-hover:block transition-all" />
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-16 text-center border-t border-stone-100 pt-8">
+          <p className="text-stone-500 text-sm flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6">
+            <span className="flex items-center"><Check size={14} className="text-[#8c7b6c] mr-2"/> Buchung & Zahlung via Zeeg</span>
+            <span className="flex items-center"><Check size={14} className="text-[#8c7b6c] mr-2"/> 100% DSGVO-konform</span>
+            <span className="flex items-center"><Check size={14} className="text-[#8c7b6c] mr-2"/> Kostenlose Verschiebung & Stornierung</span>
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const ContactSection = () => (
+  <section id="contact" className="relative h-[600px] md:h-[900px] overflow-hidden bg-white">
+    {/* Top Wave (Inverse) for smooth transition from white services */}
+    <div className="absolute top-0 left-0 right-0 z-20 translate-y-[-1px]">
+       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-12 md:h-16">
+          <defs>
+            <pattern id="wave-texture-contact" patternUnits="userSpaceOnUse" width="100%" height="100%">
+               <image href={WAVE_TEXTURE_IMAGE} x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" style={{filter: 'grayscale(1)'}}/>
+            </pattern>
+          </defs>
+          <path d={WAVE_PATH_TOP} fill="white"></path>
+          <path d={WAVE_PATH_TOP} fill="url(#wave-texture-contact)" opacity="0.1"></path>
+       </svg>
+    </div>
+
+    {/* Background Image with Overlay */}
+    <div className="absolute inset-0 z-0">
+      <img src={ENDING_IMAGE} alt="" className="w-full h-full object-cover object-center" />
+      <div className="absolute inset-0 bg-gradient-to-b from-stone-900/40 via-stone-900/20 to-stone-900/60"></div>
+    </div>
+  </section>
+);
+
+const Footer = () => (
+  <footer className="bg-[#1a1512] text-[#8c7b6c] py-12 border-t border-white/5">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+      <div className="mb-6 md:mb-0 text-center md:text-left">
+        <h4 className="text-xl font-serif font-bold text-[#f7f5f0] tracking-wide">KARO & STEVEN</h4>
+        <p className="text-[10px] uppercase tracking-[0.3em] mt-1 opacity-70">Hundetraining</p>
+      </div>
+      
+      <div className="flex space-x-8 text-sm opacity-60">
+        <a href="#" className="hover:text-white transition">Datenschutz</a>
+        <a href="#" className="hover:text-white transition">Impressum</a>
+        <a href="#" className="hover:text-white transition">AGB</a>
+      </div>
+      
+      <div className="mt-6 md:mt-0 text-xs opacity-40">
+        © {new Date().getFullYear()} All rights reserved.
+      </div>
+    </div>
+  </footer>
+);
+
+const App = () => {
+  const [activeSection, setActiveSection] = useState('hero');
+
+  const scrollToSection = useCallback((sectionId) => {
+    setActiveSection(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      // Adjust offset for fixed header
+      const offset = 80;
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, []);
+
+  return (
+    <div className="font-sans text-stone-800 antialiased bg-[#f7f5f0] selection:bg-[#8c7b6c] selection:text-white">
+      {/* Import Google Fonts via style tag for Playfair Display and Inter/Lato */}
       <style>{`
-        @keyframes fade-in-up {
-          from { opacity: 0; transform: translateY(20px); }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, .font-serif { font-family: 'Playfair Display', serif; }
+        
+        .animate-fade-in-down {
+          animation: fadeInDown 0.3s ease-out forwards;
+        }
+        
+        @keyframes fadeInDown {
+          from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-        
-        @keyframes blink {
-          0%, 100% { border-color: transparent; }
-          50% { border-color: #a855f7; }
-        }
-        .animate-pulse-cursor { animation: blink 1s step-end infinite; }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-          0% { background-position: 200% center; }
-          100% { background-position: -200% center; }
-        }
-        .animate-shimmer {
-          animation: shimmer 8s linear infinite;
-        }
       `}</style>
+      
+      <script src="https://cdn.tailwindcss.com"></script>
+      
+      <Header setPage={scrollToSection} activeSection={activeSection} />
+      
+      <main>
+        <HeroSection setPage={scrollToSection} />
+        <PhilosophySection />
+        <TestimonialsSection />
+        <ServicesSection setPage={scrollToSection} />
+        <ContactSection />
+      </main>
+      
+      <Footer />
     </div>
   );
-}
+};
+
+export default App;
